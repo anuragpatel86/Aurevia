@@ -51,7 +51,7 @@ export function ImageReveal({ src, alt, className }: ImageRevealProps) {
       <div
         ref={overlayRef}
         className="absolute inset-0 bg-[#d4a853] z-10"
-        style={{ originY: 1 }}
+        style={{ transformOrigin: 'bottom' }}
       />
       <Image
         ref={imageRef}
