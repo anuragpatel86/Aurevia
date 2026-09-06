@@ -3,7 +3,7 @@ import { useCartStore } from '../store/cartStore';
 export function useCart() {
   const {
     items,
-    isCartOpen,
+    isOpen: isCartOpen,
     addItem,
     removeItem,
     updateQuantity,
