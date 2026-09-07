@@ -1,48 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCartStore } from '@/store/cartStore';
-
-// In a real app, fetch based on params.id
-const PRODUCT = {
-  id: '1',
-  name: 'Silk Evening Dress',
-  price: 24999,
-  priceFormatted: '₹24,999',
-  images: [
-    'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80',
-    'https://images.unsplash.com/photo-1515347619362-e61e2a05cb8c?w=800&auto=format&fit=crop&q=80'
-  ],
-  description: 'An exquisite silk evening dress featuring delicate draping and a sweeping silhouette. Crafted from 100% mulberry silk, it offers unparalleled fluidity and a subtle, luxurious sheen. Perfect for your most significant events.',
-  details: [
-    '100% Mulberry Silk',
-    'Concealed back zip closure',
-    'Fully lined',
-    'Dry clean only',
-    'Made in Italy'
-  ]
-};
+import { useProductStore } from '@/store/productStore';
+import { formatPrice } from '@/lib/utils';
+import { notFound } from 'next/navigation';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
   const [selectedSize, setSelectedSize] = useState('M');
   const [selectedColor, setSelectedColor] = useState('Black');
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((state) => state.addItem);
+  const openCart = useCartStore((state) => state.openCart);
+  const { products } = useProductStore();
+
+  const product = products.find(p => p.id === params.id) || products[0];
+
+  useEffect(() => {
+    if (product?.colors && product.colors.length > 0) {
+      // Set to hex value or first color name
+      setSelectedColor(product.colors[0]);
+    }
+  }, [product]);
+
+  if (!product) {
+    return notFound();
+  }
 
   const handleAddToCart = () => {
     addItem({
-      id: PRODUCT.id,
-      name: PRODUCT.name,
-      price: PRODUCT.price,
-      image: PRODUCT.images[0],
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image1,
       size: selectedSize,
       color: selectedColor,
       quantity
     });
-    // Optional: show a toast or slide-out cart
-    alert('Added to cart!');
+    openCart();
   };
 
   return (
@@ -63,8 +60,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
         <div className="w-full lg:w-1/2 space-y-4">
           <div className="relative aspect-[3/4] w-full bg-darkLight">
             <Image
-              src={PRODUCT.images[0]}
-              alt={PRODUCT.name}
+              src={product.image1}
+              alt={product.name}
               fill
               priority
               className="object-cover"
@@ -73,8 +70,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative aspect-[3/4] bg-darkLight">
               <Image
-                src={PRODUCT.images[1]}
-                alt={`${PRODUCT.name} detail`}
+                src={product.image2}
+                alt={`${product.name} detail`}
                 fill
                 className="object-cover"
               />
@@ -87,11 +84,11 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
         {/* Right: Info */}
         <div className="w-full lg:w-1/2 flex flex-col pt-4">
-          <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4">{PRODUCT.name}</h1>
-          <p className="text-xl text-gold mb-8">{PRODUCT.priceFormatted}</p>
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-white mb-4">{product.name}</h1>
+          <p className="text-xl text-gold mb-8">{formatPrice(product.price)}</p>
           
           <div className="mb-10 text-gray-400 font-light leading-relaxed">
-            <p>{PRODUCT.description}</p>
+            <p>{product.description}</p>
           </div>
 
           {/* Color */}

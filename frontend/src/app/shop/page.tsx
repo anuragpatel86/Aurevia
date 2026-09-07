@@ -6,15 +6,11 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { FiFilter, FiGrid, FiList } from 'react-icons/fi';
 
-const SAMPLE_PRODUCTS = Array.from({ length: 24 }).map((_, i) => ({
-  id: `${i + 1}`,
-  name: ['Silk Dress', 'Wool Coat', 'Linen Suit', 'Velvet Blazer', 'Cashmere Sweater', 'Leather Jacket'][(i % 6)],
-  price: `₹${(Math.floor(Math.random() * 20) + 5) * 999}`,
-  image: `https://images.unsplash.com/photo-${['1595777457583-95e059d581b8', '1591047139829-d91aecb6caea', '1551028719-00167b16eac5', '1594938298603-c8148c4dae35', '1507679799987-c73779587ccf', '1628520118772-74892c55497f'][i % 6]}?w=600&auto=format&fit=crop&q=80`,
-  category: ['Dresses', 'Outerwear', 'Suits', 'Tops'][i % 4]
-}));
+import { useProductStore } from '@/store/productStore';
+import { formatPrice } from '@/lib/utils';
 
 export default function ShopPage() {
+  const { products } = useProductStore();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -112,7 +108,7 @@ export default function ShopPage() {
               : 'flex flex-col space-y-8'
           }`}
         >
-          {SAMPLE_PRODUCTS.map((product) => (
+          {products.map((product) => (
             <Link 
               key={product.id} 
               href={`/product/${product.id}`}
@@ -120,7 +116,7 @@ export default function ShopPage() {
             >
               <div className={`relative overflow-hidden bg-darkLight ${viewMode === 'list' ? 'w-48 aspect-[3/4] flex-shrink-0' : 'aspect-[3/4] w-full mb-4'}`}>
                 <Image
-                  src={product.image}
+                  src={product.image1}
                   alt={product.name}
                   fill
                   sizes="(max-width: 768px) 50vw, 33vw"
@@ -133,7 +129,7 @@ export default function ShopPage() {
                 <h3 className="text-white font-medium text-sm md:text-base font-serif group-hover:text-gold transition-colors">
                   {product.name}
                 </h3>
-                <p className="text-gray-400 text-sm mb-2">{product.price}</p>
+                <p className="text-gray-400 text-sm mb-2">{formatPrice(product.price)}</p>
                 {viewMode === 'list' && (
                   <p className="text-gray-500 text-sm font-light max-w-md hidden md:block">
                     A beautiful piece crafted from the finest materials, designed to offer both elegance and comfort for any occasion.

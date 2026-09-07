@@ -4,6 +4,7 @@ import '../styles/globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CustomCursor from '@/components/ui/CustomCursor';
+import { CartSidebar } from '@/components/cart/CartSidebar';
 
 const playfair = Playfair_Display({ 
   subsets: ['latin'],
@@ -32,6 +33,7 @@ export default function RootLayout({
       <body className={`${playfair.variable} ${inter.variable} font-sans bg-dark text-white antialiased`}>
         <CustomCursor />
         <Navbar />
+        <CartSidebar />
         <main className="min-h-screen">
           {children}
         </main>
