@@ -42,3 +42,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+// Vercel deployment triggered manually
