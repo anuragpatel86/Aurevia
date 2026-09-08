@@ -70,7 +70,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="grid grid-cols-2 gap-4">
             <div className="relative aspect-[3/4] bg-darkLight">
               <Image
-                src={product.image2}
+                src={product.image2 || product.image1}
                 alt={`${product.name} detail`}
                 fill
                 className="object-cover"
@@ -163,7 +163,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           <div className="border-t border-white/10 pt-8">
             <h3 className="text-sm uppercase tracking-widest font-semibold mb-4">Product Details</h3>
             <ul className="list-disc list-inside text-gray-400 text-sm space-y-2 font-light">
-              {PRODUCT.details.map((detail, i) => (
+              {['Premium Material', 'Elegant fit', 'Dry clean only', 'Ethically crafted'].map((detail, i) => (
                 <li key={i}>{detail}</li>
               ))}
             </ul>
